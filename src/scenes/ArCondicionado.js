@@ -25,6 +25,7 @@ class ArCondicionado extends Component {
 
         this.props.sensores.ar.status = (this.props.sensores.ar.status == 1) ? 0 : 1
         this.props.sensores.ar.dataUltimaAlteracao = new Date()        
+        this.props.sensores.ar.usuarioUltimaAlteracao = this.props.user.nome   
         this.props.navigation.state.params.socket.emit("message", this.props.sensores)
         
     }
@@ -35,7 +36,8 @@ class ArCondicionado extends Component {
             return
             
         this.props.sensores.ar.temperatura++
-        this.props.sensores.ar.dataUltimaAlteracao = new Date()        
+        this.props.sensores.ar.dataUltimaAlteracao = new Date() 
+        this.props.sensores.ar.usuarioUltimaAlteracao = this.props.user.nome            
         this.props.navigation.state.params.socket.emit("message", this.props.sensores)
         
     }
@@ -113,5 +115,5 @@ class ArCondicionado extends Component {
     }
 }
 
-const mapStateToProps = state => ({sensores : state.SensorReducer})
+const mapStateToProps = state => ({sensores : state.SensorReducer, user:state.UserReducer})
 export default connect(mapStateToProps, { setSensores })(ArCondicionado)

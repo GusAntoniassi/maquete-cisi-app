@@ -30,6 +30,7 @@ class Porta extends Component {
 
         this.props.sensores.porta.status = (this.props.sensores.porta.status == 1) ? 0 : 1
         this.props.sensores.porta.dataUltimaAlteracao = new Date()        
+        this.props.sensores.porta.usuarioUltimaAlteracao = this.props.user.nome
         this.props.navigation.state.params.socket.emit("message", this.props.sensores)
         
     }
@@ -82,5 +83,5 @@ class Porta extends Component {
     }
 }
 
-const mapStateToProps = state => ({sensores : state.SensorReducer})
+const mapStateToProps = state => ({sensores : state.SensorReducer, user:state.UserReducer})
 export default connect(mapStateToProps, { setSensores })(Porta)

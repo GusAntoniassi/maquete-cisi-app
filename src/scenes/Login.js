@@ -3,6 +3,7 @@ import { View, Text, Dimensions, Image, Alert, StatusBar } from 'react-native';
 import { Container, Input, Header, Form, Left, Item, Label, Body, Right, Button, Icon, Title, Content } from 'native-base';
 import DialogProgress from 'react-native-dialog-progress'
 import { setSensores } from './../services/redux/actions/SensorActions'
+import { setUser } from './../services/redux/actions/UserActions'
 import { connect } from 'react-redux'
 import * as firebase from 'firebase'
 import config from './../config/firebase'
@@ -44,8 +45,10 @@ class Login extends Component {
                     Alert.alert("Atenção", "Login incorreto")
                 else if(Object.values(user)[0].senha != this.state.pass)
                     Alert.alert("Atenção", "Senha incorreta")
-                else
+                else{
+                    this.props.setUser(Object.values(user)[0])  
                     this.props.navigation.navigate("Principal")
+                }
 
             });
     }
@@ -108,4 +111,4 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({ sensores: state.SensorReducer })
-export default connect(mapStateToProps, { setSensores })(Login)
+export default connect(mapStateToProps, { setSensores, setUser })(Login)

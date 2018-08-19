@@ -40,7 +40,12 @@ class Luz extends Component {
     toggleAction(key){
 
         this.props.sensores.leds[key].status = (this.props.sensores.leds[key].status == 1) ? 0 : 1
-        this.props.sensores.leds[key].dataUltimaAlteracao = new Date()        
+
+        for(let led in this.props.sensores.leds){
+            this.props.sensores.leds[led].dataUltimaAlteracao = new Date() 
+            this.props.sensores.leds[led].usuarioUltimaAlteracao = this.props.user.nome
+        }
+
         this.props.navigation.state.params.socket.emit("message", this.props.sensores)
         
     }
@@ -81,7 +86,7 @@ class Luz extends Component {
                         </View>
                     </View>
                     <View style={{ height: '60%', padding: 20, alignItems: 'center', justifyContent: 'flex-start' }}>
-                        <Text style={{margin:10}}>Última alteração realizada por <Text style={{fontWeight:'bold'}}>Gustavo</Text> em 03/08/2018 às 15:30</Text>
+                        <Text style={{margin:10}}>Última alteração realizada por <Text style={{fontWeight:'bold'}}>{this.props.sensores.leds[0].usuarioUltimaAlteracao}</Text> em {DateFormat.format(this.props.sensores.leds[0].dataUltimaAlteracao)}</Text>
 
                        {this.renderBotoes()}
 
@@ -92,5 +97,5 @@ class Luz extends Component {
     }
 }
 
-const mapStateToProps = state => ({sensores : state.SensorReducer})
+const mapStateToProps = state => ({sensores : state.SensorReducer, user:state.UserReducer})
 export default connect(mapStateToProps, { setSensores })(Luz)

@@ -1,60 +1,75 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, Image, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import { View, Text, Dimensions, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content } from 'native-base';
+import * as firebase from 'firebase'
+import config from './../config/firebase'
 
 import Video from 'react-native-vlc';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Monitoramento extends Component {
 
+    constructor(props) {
+
+        super(props)
+        this.loadStart = this._loadStart.bind(this)
+        this.start = this._start.bind(this)
+        this.state = {
+            ipcamera: null,
+            spinner: false
+        }
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(config)
+        }
+
+        firebase.database().ref('config/').once('value', (snapshot) => {
+            this.setState({ ipcamera: snapshot.val().ipcamera })            
+        })
+
+    }
+
+    _loadStart() {
+        this.setState({
+            spinner: true
+        })
+    }
+
+    _start() {
+        this.setState({
+            spinner: false
+        })
+    }
+
     render() {
 
-        return (
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.fullScreen} onPress={() => {Alert.alert("a"); fetch('http://192.168.11.105/web/cgi-bin/hi3510/ptzctrl.cgi?-step=0&-act=right')}}>
-                <Video
-                    style={styles.fullScreen}
-                    src={{ uri: "rtsp://admin:admin@192.168.11.105:554/11" }}
-                    source={{ uri: "rtsp://admin:admin@192.168.11.105:554/11" }} // Can be a URL or a local file.
-                    rate={1.0}                   // 0 is paused, 1 is normal.
-                    volume={1.0}                 // 0 is muted, 1 is normal.
-                    muted={false}                // Mutes the audio entirely.
-                    paused={false}               // Pauses playback entirely.
-                    resizeMode="cover"           // Fill the whole screen at aspect ratio.
-                    repeat={true}                // Repeat forever.
-                    playInBackground={false}     // Audio continues to play when aentering background.
-                    playWhenInactive={false}     // [iOS] Video continues to play whcontrol or notification center are shown.
-                    onLoadStart={this.loadStart} // Callback when video starts to load
-                    onLoad={this.setDuration}    // Callback when video loads
-                    onProgress={this.setTime}    // Callback every ~250ms with currentTime
-                    onEnd={this.onEnd}           // Callback when playback finishes
-                    onError={this.videoError}    // Callback when video cannot be loaded
-                />
+        if (this.state.ipcamera != null)
+            return (
+                <View style={styles.container}>
+                    <Spinner visible={this.state.spinner} />
 
-                </TouchableOpacity>
+                    <Video
+                        style={styles.fullScreen}
+                        src={{ uri: `rtsp://admin:admin@${this.state.ipcamera}:554/11` }}
+                        source={{ uri: `rtsp://admin:admin@${this.state.ipcamera}:554/11` }} // Can be a URL or a local file.
+                        rate={1.0}                   // 0 is paused, 1 is normal.
+                        volume={1.0}                 // 0 is muted, 1 is normal.
+                        muted={false}                // Mutes the audio entirely.
+                        paused={false}               // Pauses playback entirely.
+                        resizeMode="cover"           // Fill the whole screen at aspect ratio.
+                        repeat={true}                // Repeat forever.
+                        playInBackground={false}     // Audio continues to play when aentering background.
+                        playWhenInactive={false}     // [iOS] Video continues to play whcontrol or notification center are shown.
+                        onLoadStart={this.loadStart} // Callback when video starts to load
+                        onLoad={this.start}    // Callback when video loads
 
-                <View style={styles.controls}>
-                    <View style={styles.generalControls}>
-                        <View style={styles.rateControl}>
-                            <TouchableOpacity onPress={() => {fetch('http://192.168.11.105/web/cgi-bin/hi3510/ptzctrl.cgi?-step=0&-act=right')}}>
-                            <Text>Teste</Text>       
-                            </TouchableOpacity>
-                        </View>
+                    />
 
-                        <View style={styles.volumeControl}>
-                           
-                        </View>
-
-                        <View style={styles.resizeModeControl}>
-                           
-                        </View>
-                    </View>
-
-                    
                 </View>
 
-            </View>
-
-        );
+            );
+        else
+            return null
     }
 }
 

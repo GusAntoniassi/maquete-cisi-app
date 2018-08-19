@@ -16,6 +16,7 @@ import Monitoramento from "./src/scenes/Monitoramento";
 import UsuarioList from "./src/scenes/UsuarioList";
 import UsuarioForm from "./src/scenes/UsuarioForm";
 import Login from "./src/scenes/Login";
+import Config from "./src/scenes/Config";
 
 const Stack = StackNavigator({
   Principal: { screen: Principal },
@@ -26,7 +27,8 @@ const Stack = StackNavigator({
   Monitoramento: { screen: Monitoramento },
   UsuarioList: { screen: UsuarioList },
   UsuarioForm: { screen: UsuarioForm },
-  Login: { screen: Login }
+  Login: { screen: Login },
+  Config: { screen: Config }
 }, {
     initialRouteName: 'Login',
     headerMode: 'none',

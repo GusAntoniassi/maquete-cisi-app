@@ -53,7 +53,9 @@ class Principal extends Component {
                         <Title>CISI CTRL</Title>
                     </Body>
                     <Right>
-
+                        <Button transparent onPress={() => this.props.navigation.push("Config")}>
+                            <Icon name="settings" />
+                        </Button>
                     </Right>
                 </Header>
                 <View style={{ flex: 1, flexDirection: 'column'}}>
